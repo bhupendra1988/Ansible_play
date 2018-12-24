@@ -1,0 +1,54 @@
+---
+
+- file:
+    path: "{{item}}"
+    state: directory
+    recurse: yes
+  with_items:
+    - /cwp
+
+- name: copy swp agent
+  copy:
+    src: scwp_agent_ubuntu14_package
+    dest: /cwp/scwp_agent_ubuntu14_package
+    mode: 0755
+
+
+- name: Extract scwp_agent_ubuntu14_package
+  unarchive:
+    src: scwp_agent_ubuntu14_package
+    dest: /cwp/
+
+
+- name: changing permission to installagent.sh
+  file:
+    path: '/cwp/installagent.sh'
+    state: file
+    mode: 0755
+
+- name: Running install.sh
+  shell: './installagent.sh'
+  become: true
+  become_user: root
+  args:
+    chdir: /cwp/
+  register: task_result
+
+- name: Reboot immediately if there was a change.
+  shell: "sleep 5 && reboot"
+  async: 1
+  poll: 0
+  when: task_result is changed
+
+- name: Wait for the reboot to complete if there was a change.
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 5
+    timeout: 300
+  when: task_result is changed
+
+- name: Ansible check file exists example.
+  stat:
+    path: /opt/Symantec/
+  register: file_details
