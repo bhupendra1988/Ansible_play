@@ -1,0 +1,15 @@
+- name: Check for the rpm 
+  shell: rpm -qa | grep sdcss
+  register: result
+
+- name: remove the agent 
+  shell: rpm -e sdcss-kmod
+  when: result is succeeded
+
+- name: remove the agent
+  shell: rpm -e sdcss-agent
+  when: result is succeeded
+
+- name: remove the agent
+  shell: rpm -e sdcss-caf
+  when: result is succeeded
