@@ -1,0 +1,7 @@
+---
+- name: Installing ssm through ps1 script
+  hosts: localhost
+  sudo: true
+  sudo_user: root
+  roles:
+  - cwp-uinstall
