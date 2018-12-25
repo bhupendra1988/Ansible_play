@@ -1,0 +1,15 @@
+#Install and configure HTTP web server
+-
+  name: Apache installation and configuration
+  hosts: localhost
+  tasks:
+    - name: Install Apache package
+      yum:
+        name: httpd
+        state: present
+    - name: Insure HTTPD is running
+      service:
+        name: httpd
+        state: started
+    - name: Configure index.html
+      shell: echo "Welcome" > /var/www/html/index.html
