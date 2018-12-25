@@ -1,0 +1,13 @@
+#Uninstall httpd
+-
+  name: Remove httpd
+  hosts: localhost
+  tasks:
+    - name: Uninstall package
+      yum:
+        name: httpd
+        state: absent
+    - name: remove index.html
+      file:
+        path: /var/www/html/index.html
+        state: absent
