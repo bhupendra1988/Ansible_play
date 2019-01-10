@@ -1,0 +1,18 @@
+---
+-
+  hosts: all
+  user: ansible
+  become: yes
+  become_user: root
+  tasks:
+    - name: Stop AWS SSM agent service
+      service:
+        name: amazon-ssm-agent
+        state: stopped
+    - name: Deregister ssm agent with activation code
+      shell: amazon-ssm-agent -clear -code "danXPQ0J" -id "5a4a91e9" -region "us-east-1" -i "mi-09e15619ed3504c4b" -y
+    - name: Start the AWS SSM agent service
+      service:
+        name: amazon-ssm-agent
+        enabled: yes
+        state: started
