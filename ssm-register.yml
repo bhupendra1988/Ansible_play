@@ -1,0 +1,22 @@
+---
+-
+  hosts: all
+  user: ansible
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install AWS SSM agent
+      yum:
+        name: https://s3-us-gov-west-1.amazonaws.com/nimbis-platform-public/amazon-ssm-agent.rpm
+        state: present
+    - name: Stop AWS SSM agent service
+      service:
+        name: amazon-ssm-agent
+        state: stopped
+    - name: Register ssm agent with activation code
+      shell: amazon-ssm-agent -register -code "78" -id "da" -region "us-east-1" -y
+    - name: Start the AWS SSM agent service
+      service:
+        name: amazon-ssm-agent
+        enabled: yes
+        state: started
